@@ -1,29 +1,51 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import app from './app';
 
-const app: Express = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.json());
+// Function to get all registered routes
+const getRoutes = (app: any) => {
+  const routes: string[] = [];
+  
+  const processStack = (stack: any[], prefix: string = '') => {
+    stack.forEach((layer) => {
+      if (layer.route) {
+        // This is a route
+        const methods = Object.keys(layer.route.methods)
+          .filter(method => layer.route.methods[method])
+          .map(method => method.toUpperCase())
+          .join(', ');
+        routes.push(`${methods} ${prefix}${layer.route.path}`);
+      } else if (layer.name === 'router') {
+        // This is a router
+        const newPrefix = prefix + (layer.regexp.source
+          .replace('^\\/','/')
+          .replace('\\/?(?=\\/|$)','')
+          .replace(/\\\//g, '/')
+          .replace(/\\\?/g, '?')
+          .replace(/\\\*/g, '*')
+          .replace(/\\\+/g, '+')
+          .replace(/\\\(/g, '(')
+          .replace(/\\\)/g, ')')
+          .replace(/\\\[/g, '[')
+          .replace(/\\\]/g, ']')
+          .replace(/\\\^/g, '^')
+          .replace(/\\\$/g, '$')
+          .replace(/\\\./g, '.')
+          .replace(/\\\|/g, '|')
+          .replace(/\\/g, ''));
+        processStack(layer.handle.stack, newPrefix);
+      }
+    });
+  };
 
-// Simple middleware for logging
-app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
-
-// First API Endpoint: Health Check
-app.get('/api/v1/status', (req: Request, res: Response) => {
-  res.status(200).json({ status: 'UP', timestamp: new Date().toISOString() });
-});
-
-// Global error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!', error: err.message });
-});
+  processStack(app._router.stack);
+  return routes;
+};
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
-});
-
-export default app; // Export app for potential testing or other uses 
+  console.log('\nRegistered Routes:');
+  console.log('------------------');
+  getRoutes(app).forEach(route => console.log(route));
+  console.log('------------------\n');
+}); 
