@@ -1,11 +1,30 @@
-export interface Department {
-  id: number; // Or number, depending on your DB
-  name: string;
-  // Potentially add a list of employee IDs or Employee objects later
-  employeeIds?: string[]; 
-} 
-export const mockDepartments: Department[] = [
-  { id: 1, name: 'Sales' },
-  { id: 2, name: 'Marketing' },
-  { id: 3, name: 'Engineering' },
-];
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../config/database';
+
+class Department extends Model {
+    public id!: number;
+    public name!: string;
+}
+
+Department.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+        },
+    },
+    {
+        sequelize,
+        modelName: 'Department',
+        tableName: 'departments',
+        timestamps: true,
+    }
+);
+
+export default Department;

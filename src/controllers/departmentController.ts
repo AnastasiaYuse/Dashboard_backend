@@ -1,17 +1,11 @@
 import { Request, Response } from 'express';
-import { DepartmentService } from '../services/departmentService';
+import DepartmentService from '../services/departmentService';
 
-export class DepartmentController {
-  private departmentService: DepartmentService;
-
-  constructor() {
-    this.departmentService = new DepartmentService();
-  }
-
+class DepartmentController {
   // Get all departments
-  getAllDepartments = (req: Request, res: Response): void => {
+  getAllDepartments = async (req: Request, res: Response) => {
     try {
-      const departments = this.departmentService.getAllDepartments();
+      const departments = await DepartmentService.getAllDepartments();
       res.status(200).json(departments);
     } catch (error) {
       res.status(500).json({ message: 'Error fetching departments', error });
@@ -19,16 +13,14 @@ export class DepartmentController {
   };
 
   // Get department by id
-  getDepartmentById = (req: Request, res: Response): void => {
+  getDepartmentById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const department = this.departmentService.getDepartmentById(id);
-      
+      const department = await DepartmentService.getDepartmentById(Number(id));
       if (!department) {
         res.status(404).json({ message: 'Department not found' });
         return;
       }
-      
       res.status(200).json(department);
     } catch (error) {
       res.status(500).json({ message: 'Error fetching department', error });
@@ -36,10 +28,10 @@ export class DepartmentController {
   };
 
   // Create new department
-  createDepartment = (req: Request, res: Response): void => {
+  createDepartment = async (req: Request, res: Response) => {
     try {
       const departmentData = req.body;
-      const newDepartment = this.departmentService.createDepartment(departmentData);
+      const newDepartment = await DepartmentService.createDepartment(departmentData);
       res.status(201).json(newDepartment);
     } catch (error) {
       res.status(500).json({ message: 'Error creating department', error });
@@ -47,17 +39,15 @@ export class DepartmentController {
   };
 
   // Update department
-  updateDepartment = (req: Request, res: Response): void => {
+  updateDepartment = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const departmentData = req.body;
-      const updatedDepartment = this.departmentService.updateDepartment(id, departmentData);
-      
+      const updatedDepartment = await DepartmentService.updateDepartment(Number(id), departmentData);
       if (!updatedDepartment) {
         res.status(404).json({ message: 'Department not found' });
         return;
       }
-      
       res.status(200).json(updatedDepartment);
     } catch (error) {
       res.status(500).json({ message: 'Error updating department', error });
@@ -65,19 +55,19 @@ export class DepartmentController {
   };
 
   // Delete department
-  deleteDepartment = (req: Request, res: Response): void => {
+  deleteDepartment = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const success = this.departmentService.deleteDepartment(id);
-      
-      if (!success) {
+      const result = await DepartmentService.deleteDepartment(Number(id));
+      if (!result) {
         res.status(404).json({ message: 'Department not found' });
         return;
       }
-      
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: 'Error deleting department', error });
     }
   };
-} 
+}
+
+export default new DepartmentController(); 

@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { DepartmentController } from '../controllers/departmentController';
+import DepartmentController from '../controllers/departmentController';
 
 const router = Router();
-const departmentController = new DepartmentController();
+const departmentController = DepartmentController;
 
 // GET all departments
 router.get('/', departmentController.getAllDepartments);

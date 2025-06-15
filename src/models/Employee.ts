@@ -1,19 +1,57 @@
-import { Task } from './Task';
+import { DataTypes, Model } from 'sequelize';
+import sequelize from '../config/database';
 
-export interface Employee {
-  id: number; // Or number
-  name: string;
-  departmentId: number; // Foreign key to Department
-  email: string;
-  position: string;
-  // Potentially add a list of task IDs or Task objects later
-  // taskIds?: string[]; 
-} 
-export const mockEmployees: Employee[] = [
-  { id: 1, name: 'John Doe', departmentId: 1, email: 'john.doe@example.com', position: 'Manager' },
-  { id: 2, name: 'Jane Smith', departmentId: 2, email: 'jane.smith@example.com', position: 'Developer' },
-  { id: 3, name: 'Alice Johnson', departmentId: 3, email: 'alice.johnson@example.com', position: 'Designer' },
-];
+class Employee extends Model {
+    public id!: number;
+    public name!: string;
+    public departmentId!: number;
+    public email!: string;
+    public position!: string;
+}
+
+Employee.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
+        },
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        departmentId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+                model: 'departments',
+                key: 'id',
+            },
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+            validate: {
+                isEmail: true,
+            },
+        },
+        position: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+    },
+    {
+        sequelize,
+        modelName: 'Employee',
+        tableName: 'employees',
+        timestamps: true,
+    }
+);
+
+export default Employee;
+
+
 
 
 

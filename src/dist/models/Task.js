@@ -1,8 +1,47 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mockTasks = void 0;
-exports.mockTasks = [
-    { id: '1', title: 'Task 1', description: 'Description 1', status: 'To Do', assigneeId: '1' },
-    { id: '2', title: 'Task 2', description: 'Description 2', status: 'In Progress', assigneeId: '2' },
-    { id: '3', title: 'Task 3', description: 'Description 3', status: 'Done', assigneeId: '3' },
-];
+const sequelize_1 = require("sequelize");
+const database_1 = __importDefault(require("../config/database"));
+class Task extends sequelize_1.Model {
+}
+Task.init({
+    id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    title: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    description: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: false,
+    },
+    status: {
+        type: sequelize_1.DataTypes.ENUM('To Do', 'In Progress', 'Done'),
+        allowNull: false,
+        defaultValue: 'To Do',
+    },
+    dueDate: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true,
+    },
+    employeeId: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'employees',
+            key: 'id',
+        },
+    },
+}, {
+    sequelize: database_1.default,
+    modelName: 'Task',
+    tableName: 'tasks',
+    timestamps: true,
+});
+exports.default = Task;

@@ -1,45 +1,58 @@
-import { Department, mockDepartments } from '../models/Department';
+import Department from '../models/Department';
 
-export class DepartmentService {
-  private departments: Department[] = [...mockDepartments];
+class DepartmentService {
+    async getAllDepartments() {
+        try {
+            return await Department.findAll();
+        } catch (error) {
+            throw new Error('Error fetching departments');
+        }
+    }
 
-  // Get all departments
-  getAllDepartments(): Department[] {
-    return this.departments;
-  }
+    async getDepartmentById(id: number) {
+        try {
+            const department = await Department.findByPk(id);
+            if (!department) {
+                throw new Error('Department not found');
+            }
+            return department;
+        } catch (error) {
+            throw new Error('Error fetching department');
+        }
+    }
 
-  // Get department by id
-  getDepartmentById(id: string): Department | undefined {
-    return this.departments.find(dept => dept.id === id);
-  }
+    async createDepartment(departmentData: { name: string }) {
+        try {
+            return await Department.create(departmentData);
+        } catch (error) {
+            throw new Error('Error creating department');
+        }
+    }
 
-  // Create new department
-  createDepartment(department: Omit<Department, 'id'>): Department {
-    const newDepartment: Department = {
-      id: (this.departments.length + 1).toString(), // Simple ID generation
-      ...department
-    };
-    this.departments.push(newDepartment);
-    return newDepartment;
-  }
+    async updateDepartment(id: number, departmentData: { name?: string }) {
+        try {
+            const department = await Department.findByPk(id);
+            if (!department) {
+                throw new Error('Department not found');
+            }
+            return await department.update(departmentData);
+        } catch (error) {
+            throw new Error('Error updating department');
+        }
+    }
 
-  // Update department
-  updateDepartment(id: string, departmentData: Partial<Department>): Department | undefined {
-    const index = this.departments.findIndex(dept => dept.id === id);
-    if (index === -1) return undefined;
+    async deleteDepartment(id: number) {
+        try {
+            const department = await Department.findByPk(id);
+            if (!department) {
+                throw new Error('Department not found');
+            }
+            await department.destroy();
+            return { message: 'Department deleted successfully' };
+        } catch (error) {
+            throw new Error('Error deleting department');
+        }
+    }
+}
 
-    const updatedDepartment = {
-      ...this.departments[index],
-      ...departmentData
-    };
-    this.departments[index] = updatedDepartment;
-    return updatedDepartment;
-  }
-
-  // Delete department
-  deleteDepartment(id: string): boolean {
-    const initialLength = this.departments.length;
-    this.departments = this.departments.filter(dept => dept.id !== id);
-    return initialLength !== this.departments.length;
-  }
-} 
+export default new DepartmentService(); 

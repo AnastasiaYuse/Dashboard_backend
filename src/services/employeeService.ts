@@ -1,9 +1,9 @@
-import { Employee, mockEmployees } from '../models/Employee';
+import Employee from '../models/Employee';
 
 class EmployeeService {
     async getAllEmployees() {
         try {
-            return mockEmployees;
+            return await Employee.findAll();
         } catch (error) {
             throw new Error('Error fetching employees');
         }
@@ -11,7 +11,7 @@ class EmployeeService {
 
     async getEmployeeById(id: number) {
         try {
-            const employee = mockEmployees.find(emp => emp.id === id);
+            const employee = await Employee.findByPk(id);
             if (!employee) {
                 throw new Error('Employee not found');
             }
@@ -21,27 +21,21 @@ class EmployeeService {
         }
     }
 
-    async createEmployee(employeeData: Omit<Employee, 'id'>) {
+    async createEmployee(employeeData: { name: string; departmentId: number; email: string; position: string }) {
         try {
-            const newEmployee: Employee = {
-                id: (mockEmployees.length + 1),
-                ...employeeData
-            };
-            mockEmployees.push(newEmployee);
-            return newEmployee;
+            return await Employee.create(employeeData);
         } catch (error) {
             throw new Error('Error creating employee');
         }
     }
 
-    async updateEmployee(id: number, employeeData: Partial<Omit<Employee, 'id'>>) {
+    async updateEmployee(id: number, employeeData: { name?: string; departmentId?: number; email?: string; position?: string }) {
         try {
-            const index = mockEmployees.findIndex(emp => emp.id === id);
-            if (index === -1) {
+            const employee = await Employee.findByPk(id);
+            if (!employee) {
                 throw new Error('Employee not found');
             }
-            mockEmployees[index] = { ...mockEmployees[index], ...employeeData };
-            return mockEmployees[index];
+            return await employee.update(employeeData);
         } catch (error) {
             throw new Error('Error updating employee');
         }
@@ -49,11 +43,11 @@ class EmployeeService {
 
     async deleteEmployee(id: number) {
         try {
-            const index = mockEmployees.findIndex(emp => emp.id === id);
-            if (index === -1) {
+            const employee = await Employee.findByPk(id);
+            if (!employee) {
                 throw new Error('Employee not found');
             }
-            mockEmployees.splice(index, 1);
+            await employee.destroy();
             return { message: 'Employee deleted successfully' };
         } catch (error) {
             throw new Error('Error deleting employee');

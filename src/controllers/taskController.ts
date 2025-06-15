@@ -27,21 +27,17 @@ class TaskController {
 
     async createTask(req: Request, res: Response) {
         try {
-            const { title, description, status, dueDate, employeeId, projectId } = req.body;
-            
-            if (!title || !description || !status || !dueDate || !employeeId || !projectId) {
+            const { title, description, status, dueDate, employeeId } = req.body;
+            if (!title || !description || !status || !dueDate || !employeeId) {
                 return res.status(400).json({ error: 'All fields are required' });
             }
-
             const task = await taskService.createTask({
                 title,
                 description,
                 status,
                 dueDate: new Date(dueDate),
-                employeeId,
-                projectId
+                employeeId
             });
-            
             res.status(201).json(task);
         } catch (error) {
             res.status(500).json({ error: 'Failed to create task' });
@@ -51,16 +47,13 @@ class TaskController {
     async updateTask(req: Request, res: Response) {
         try {
             const id = parseInt(req.params.id);
-            const { title, description, status, dueDate, employeeId, projectId } = req.body;
-
+            const { title, description, status, dueDate, employeeId } = req.body;
             const taskData: any = {};
             if (title) taskData.title = title;
             if (description) taskData.description = description;
             if (status) taskData.status = status;
             if (dueDate) taskData.dueDate = new Date(dueDate);
             if (employeeId) taskData.employeeId = employeeId;
-            if (projectId) taskData.projectId = projectId;
-
             const updatedTask = await taskService.updateTask(id, taskData);
             res.json(updatedTask);
         } catch (error) {

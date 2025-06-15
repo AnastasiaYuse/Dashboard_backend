@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const departmentController_1 = require("../controllers/departmentController");
+const departmentController_1 = __importDefault(require("../controllers/departmentController"));
 const router = (0, express_1.Router)();
-const departmentController = new departmentController_1.DepartmentController();
+const departmentController = departmentController_1.default;
 // GET all departments
 router.get('/', departmentController.getAllDepartments);
 // GET department by id

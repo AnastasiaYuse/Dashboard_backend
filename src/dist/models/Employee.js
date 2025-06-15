@@ -1,8 +1,46 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mockEmployees = void 0;
-exports.mockEmployees = [
-    { id: '1', name: 'John Doe', departmentId: '1', email: 'john.doe@example.com', position: 'Manager' },
-    { id: '2', name: 'Jane Smith', departmentId: '2', email: 'jane.smith@example.com', position: 'Developer' },
-    { id: '3', name: 'Alice Johnson', departmentId: '3', email: 'alice.johnson@example.com', position: 'Designer' },
-];
+const sequelize_1 = require("sequelize");
+const database_1 = __importDefault(require("../config/database"));
+class Employee extends sequelize_1.Model {
+}
+Employee.init({
+    id: {
+        type: sequelize_1.DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    name: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+    departmentId: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'departments',
+            key: 'id',
+        },
+    },
+    email: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true,
+        },
+    },
+    position: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: false,
+    },
+}, {
+    sequelize: database_1.default,
+    modelName: 'Employee',
+    tableName: 'employees',
+    timestamps: true,
+});
+exports.default = Employee;

@@ -21,14 +21,7 @@ class TaskService {
         }
     }
 
-    async createTask(taskData: {
-        title: string;
-        description: string;
-        status: string;
-        dueDate: Date;
-        employeeId: number;
-        projectId: number;
-    }) {
+    async createTask(taskData: { title: string; description: string; status: 'To Do' | 'In Progress' | 'Done'; dueDate?: Date; employeeId: number }) {
         try {
             return await Task.create(taskData);
         } catch (error) {
@@ -36,14 +29,7 @@ class TaskService {
         }
     }
 
-    async updateTask(id: number, taskData: {
-        title?: string;
-        description?: string;
-        status?: string;
-        dueDate?: Date;
-        employeeId?: number;
-        projectId?: number;
-    }) {
+    async updateTask(id: number, taskData: { title?: string; description?: string; status?: 'To Do' | 'In Progress' | 'Done'; dueDate?: Date; employeeId?: number }) {
         try {
             const task = await Task.findByPk(id);
             if (!task) {
