@@ -18,6 +18,14 @@ Department.init({
         allowNull: false,
         unique: true,
     },
+    description: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true,
+    },
+    location: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
+    }
 }, {
     sequelize: database_1.default,
     modelName: 'Department',

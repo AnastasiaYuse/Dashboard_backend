@@ -4,6 +4,8 @@ import sequelize from '../config/database';
 class Department extends Model {
     public id!: number;
     public name!: string;
+    public description?: string;
+    public location?: string;
 }
 
 Department.init(
@@ -18,6 +20,14 @@ Department.init(
             allowNull: false,
             unique: true,
         },
+        description: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
+        location: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        }
     },
     {
         sequelize,

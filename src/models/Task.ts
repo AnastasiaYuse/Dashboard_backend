@@ -7,7 +7,8 @@ class Task extends Model {
     public description!: string;
     public status!: 'To Do' | 'In Progress' | 'Done';
     public dueDate!: Date;
-    public employeeId!: number;
+    public projectId!: number;
+    public priority!: 'Low' | 'Medium' | 'High';
 }
 
 Task.init(
@@ -34,14 +35,19 @@ Task.init(
             type: DataTypes.DATE,
             allowNull: true,
         },
-        employeeId: {
+        projectId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: 'employees',
+                model: 'projects',
                 key: 'id',
             },
         },
+        priority: {
+            type: DataTypes.ENUM('Low', 'Medium', 'High'),
+            allowNull: false,
+            defaultValue: 'Medium',
+        }
     },
     {
         sequelize,

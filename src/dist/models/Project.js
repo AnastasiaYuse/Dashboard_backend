@@ -29,18 +29,20 @@ Project.init({
             key: 'id',
         },
     },
-    employeeId: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'employees',
-            key: 'id',
-        },
-    },
-    projectDeadline: {
+    startDate: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false,
+        defaultValue: sequelize_1.DataTypes.NOW,
     },
+    endDate: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true,
+    },
+    status: {
+        type: sequelize_1.DataTypes.ENUM('Planning', 'In Progress', 'On Hold', 'Completed'),
+        allowNull: false,
+        defaultValue: 'Planning',
+    }
 }, {
     sequelize: database_1.default,
     modelName: 'Project',

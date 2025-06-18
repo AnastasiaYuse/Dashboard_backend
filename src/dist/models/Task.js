@@ -30,14 +30,19 @@ Task.init({
         type: sequelize_1.DataTypes.DATE,
         allowNull: true,
     },
-    employeeId: {
+    projectId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'employees',
+            model: 'projects',
             key: 'id',
         },
     },
+    priority: {
+        type: sequelize_1.DataTypes.ENUM('Low', 'Medium', 'High'),
+        allowNull: false,
+        defaultValue: 'Medium',
+    }
 }, {
     sequelize: database_1.default,
     modelName: 'Task',

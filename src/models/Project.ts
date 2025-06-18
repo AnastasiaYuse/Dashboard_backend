@@ -6,8 +6,9 @@ class Project extends Model {
     public name!: string;
     public description!: string;
     public departmentId!: number;
-    public employeeId!: number;
-    public projectDeadline!: Date;
+    public startDate!: Date;
+    public endDate!: Date;
+    public status!: 'Planning' | 'In Progress' | 'On Hold' | 'Completed';
 }
 
 Project.init(
@@ -33,18 +34,20 @@ Project.init(
                 key: 'id',
             },
         },
-        employeeId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-            references: {
-                model: 'employees',
-                key: 'id',
-            },
-        },
-        projectDeadline: {
+        startDate: {
             type: DataTypes.DATE,
             allowNull: false,
+            defaultValue: DataTypes.NOW,
         },
+        endDate: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        status: {
+            type: DataTypes.ENUM('Planning', 'In Progress', 'On Hold', 'Completed'),
+            allowNull: false,
+            defaultValue: 'Planning',
+        }
     },
     {
         sequelize,

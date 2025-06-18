@@ -37,6 +37,11 @@ Employee.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
+    hireDate: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize_1.DataTypes.NOW,
+    }
 }, {
     sequelize: database_1.default,
     modelName: 'Employee',

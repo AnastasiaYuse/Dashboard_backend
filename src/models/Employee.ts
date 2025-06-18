@@ -7,6 +7,7 @@ class Employee extends Model {
     public departmentId!: number;
     public email!: string;
     public position!: string;
+    public hireDate!: Date;
 }
 
 Employee.init(
@@ -40,6 +41,11 @@ Employee.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        hireDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+        }
     },
     {
         sequelize,
